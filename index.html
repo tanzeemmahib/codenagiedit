@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Chandelier Visualizer</title>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
@@ -27,6 +27,15 @@
     <!-- Lyrics will go here -->
   </div>
 
+  <div class="controls">
+    <button id="backBtn">⏮️</button>
+    <button id="playPauseBtn">⏸️</button>
+    <button id="nextBtn">⏭️</button>
+    <button id="shuffleBtn">🔀</button>
+    <button id="repeatBtn">🔁</button>
+    <input id="volumeSlider" type="range" min="0" max="1" step="0.01" />
+  </div>
+
   <audio id="audio" src="chandelier.mp3"></audio>
 
   <script>
@@ -44,6 +53,8 @@
 
     const audio = document.getElementById('audio');
     const lyricsBox = document.getElementById('lyricsBox');
+    const playPauseBtn = document.getElementById('playPauseBtn');
+    const volumeSlider = document.getElementById('volumeSlider');
 
     lyrics.forEach(line => {
       const div = document.createElement('div');
@@ -58,6 +69,20 @@
       audio.play();
     }
 
+    playPauseBtn.onclick = () => {
+      if (audio.paused) {
+        audio.play();
+        playPauseBtn.innerText = '⏸️';
+      } else {
+        audio.pause();
+        playPauseBtn.innerText = '▶️';
+      }
+    };
+
+    volumeSlider.addEventListener('input', () => {
+      audio.volume = volumeSlider.value;
+    });
+
     audio.ontimeupdate = () => {
       const currentTime = audio.currentTime;
       const lines = document.querySelectorAll('.lyric-line');
@@ -67,6 +92,7 @@
 
         if (currentTime >= time && currentTime < nextTime) {
           line.classList.add('active');
+          line.scrollIntoView({ behavior: 'smooth', block: 'center' });
         } else {
           line.classList.remove('active');
         }
