@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Chandelier Visualizer</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet" />
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body {
+      font-family: 'Inter', sans-serif;
+      background: black;
+      color: white;
+      overflow: hidden;
+    }
+    #overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(0, 0, 0, 0.7);
+      z-index: 2;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #b3e5fc;
+      font-size: 2rem;
+      cursor: pointer;
+    }
+    video#bg-video {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      object-fit: cover;
+      z-index: 0;
+      pointer-events: none;
+    }
+    .lyrics-box {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      text-align: center;
+      color: #e1f5fe;
+      font-size: 1.3rem;
+      width: 60vw;
+      z-index: 3;
+    }
+    .lyric-line {
+      opacity: 0.4;
+      transition: all 0.4s ease;
+    }
+    .lyric-line.active {
+      font-size: 1.6rem;
+      font-weight: 600;
+      color: #81d4fa;
+      opacity: 1;
+    }
+    .info {
+      position: absolute;
+      top: 20px;
+      left: 20px;
+      z-index: 3;
+      color: #b3e5fc;
+      display: flex;
+      align-items: center;
+    }
+    .info img {
+      height: 64px;
+      width: 64px;
+      border-radius: 10px;
+      margin-right: 16px;
+    }
+    .snowflake {
+      position: fixed;
+      top: -10px;
+      width: 10px;
+      height: 10px;
+      background: #e0f7fa;
+      border-radius: 50%;
+      opacity: 0.7;
+      pointer-events: none;
+      animation: fall linear infinite;
+      z-index: 1;
+    }
+    @keyframes fall {
+      to {
+        transform: translateY(100vh);
+      }
+    }
+  </style>
+</head>
+<body>
+  <div id="overlay" onclick="startVisualizer()">Play song</div>
+
+  <video autoplay muted loop playsinline id="bg-video">
+    <source src="bg-video.mp4" type="video/mp4" />
+  </video>
+
+  <div class="info">
+    <img src="cover.png" alt="Chandelier Cover" />
+    <div>
+      <h3>Chandelier</h3>
+      <p>Sia</p>
+    </div>
+  </div>
+
+  <div class="lyrics-box" id="lyricsBox">
+    <!-- Lyrics will go here -->
+  </div>
+
+  <audio id="audio" src="chandelier.mp3"></audio>
+
+  <script>
+    const lyrics = [
+      { time: 0, text: "Party girls don't get hurt" },
+      { time: 5, text: "Can't feel anything, when will I learn" },
+      { time: 10, text: "I push it down, push it down" },
+      { time: 15, text: "I'm the one 'for a good time call'" },
+      { time: 20, text: "Phone's blowin' up, ringin' my doorbell" },
+      { time: 25, text: "I feel the love, feel the love" },
+      { time: 30, text: "1, 2, 3, 1, 2, 3, drink" },
+      { time: 35, text: "Throw 'em back 'til I lose count" },
+      { time: 40, text: "I'm gonna swing from the chandelier, from the chandelier" },
+    ];
+
+    const audio = document.getElementById('audio');
+    const lyricsBox = document.getElementById('lyricsBox');
+
+    lyrics.forEach(line => {
+      const div = document.createElement('div');
+      div.classList.add('lyric-line');
+      div.dataset.time = line.time;
+      div.innerText = line.text;
+      lyricsBox.appendChild(div);
+    });
+
+    function startVisualizer() {
+      document.getElementById('overlay').style.display = 'none';
+      audio.play();
+    }
+
+    audio.ontimeupdate = () => {
+      const currentTime = audio.currentTime;
+      const lines = document.querySelectorAll('.lyric-line');
+      lines.forEach((line, i) => {
+        const time = parseFloat(line.dataset.time);
+        const nextTime = i + 1 < lyrics.length ? parseFloat(lines[i + 1].dataset.time) : Number.MAX_VALUE;
+
+        if (currentTime >= time && currentTime < nextTime) {
+          line.classList.add('active');
+        } else {
+          line.classList.remove('active');
+        }
+      });
+    }
+
+    // Snowfall animation
+    function createSnowflake() {
+      const snowflake = document.createElement('div');
+      snowflake.classList.add('snowflake');
+      snowflake.style.left = Math.random() * 100 + 'vw';
+      snowflake.style.animationDuration = 5 + Math.random() * 5 + 's';
+      snowflake.style.opacity = Math.random();
+      snowflake.style.transform = `scale(${Math.random()})`;
+      document.body.appendChild(snowflake);
+      setTimeout(() => snowflake.remove(), 10000);
+    }
+    setInterval(createSnowflake, 200);
+  </script>
+</body>
+</html>
