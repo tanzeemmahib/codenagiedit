@@ -5,97 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Chandelier Visualizer</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet" />
-  <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-    body {
-      font-family: 'Inter', sans-serif;
-      background: black;
-      color: white;
-      overflow: hidden;
-    }
-    #overlay {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100vw;
-      height: 100vh;
-      background: rgba(0, 0, 0, 0.7);
-      z-index: 2;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: #b3e5fc;
-      font-size: 2rem;
-      cursor: pointer;
-    }
-    video#bg-video {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100vw;
-      height: 100vh;
-      object-fit: cover;
-      z-index: 0;
-      pointer-events: none;
-    }
-    .lyrics-box {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      text-align: center;
-      color: #e1f5fe;
-      font-size: 1.3rem;
-      width: 60vw;
-      z-index: 3;
-    }
-    .lyric-line {
-      opacity: 0.4;
-      transition: all 0.4s ease;
-    }
-    .lyric-line.active {
-      font-size: 1.6rem;
-      font-weight: 600;
-      color: #81d4fa;
-      opacity: 1;
-    }
-    .info {
-      position: absolute;
-      top: 20px;
-      left: 20px;
-      z-index: 3;
-      color: #b3e5fc;
-      display: flex;
-      align-items: center;
-    }
-    .info img {
-      height: 64px;
-      width: 64px;
-      border-radius: 10px;
-      margin-right: 16px;
-    }
-    .snowflake {
-      position: fixed;
-      top: -10px;
-      width: 10px;
-      height: 10px;
-      background: #e0f7fa;
-      border-radius: 50%;
-      opacity: 0.7;
-      pointer-events: none;
-      animation: fall linear infinite;
-      z-index: 1;
-    }
-    @keyframes fall {
-      to {
-        transform: translateY(100vh);
-      }
-    }
-  </style>
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
   <div id="overlay" onclick="startVisualizer()">Play song</div>
@@ -103,6 +13,7 @@
   <video autoplay muted loop playsinline id="bg-video">
     <source src="bg-video.mp4" type="video/mp4" />
   </video>
+  <div class="blur-layer"></div>
 
   <div class="info">
     <img src="cover.png" alt="Chandelier Cover" />
